@@ -8,6 +8,20 @@
       "when": 1756146567894,
       "tag": "0000_mature_vengeance",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756483260268,
+      "tag": "0001_perfect_scourge",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756496111045,
+      "tag": "0002_greedy_blue_shield",
+      "breakpoints": true
     }
   ]
 }

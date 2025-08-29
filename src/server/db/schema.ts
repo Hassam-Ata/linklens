@@ -15,8 +15,8 @@ import type { AdapterAccount } from "next-auth/adapters";
 // Define user roles enum
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
-// Define user table
-export const users = pgTable("users", {
+// Define user table - CHANGED FROM "users" TO "user"
+export const users = pgTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull().unique(),
@@ -28,17 +28,18 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+// CHANGED FROM "accounts" TO "account"
 export const accounts = pgTable(
-  "accounts",
+  "account",
   {
-    userId: varchar("user_id", { length: 255 })
+    userId: varchar("userId", { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: varchar("type", { length: 255 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
-    providerAccountId: varchar("provider_account_id", {
+    providerAccountId: varchar("providerAccountId", {
       length: 255,
     }).notNull(),
     refresh_token: text("refresh_token"),
@@ -58,18 +59,18 @@ export const accounts = pgTable(
   ]
 );
 
-export const sessions = pgTable("sessions", {
-  sessionToken: varchar("session_token", { length: 255 })
-    .notNull()
-    .primaryKey(),
-  userId: varchar("user_id", { length: 255 })
+// CHANGED FROM "sessions" TO "session"
+export const sessions = pgTable("session", {
+  sessionToken: varchar("sessionToken", { length: 255 }).notNull().primaryKey(),
+  userId: varchar("userId", { length: 255 })
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
+// CHANGED FROM "verification_token" TO "verificationToken"
 export const verificationTokens = pgTable(
-  "verification_token",
+  "verificationToken",
   {
     identifier: varchar("identifier", { length: 255 }).notNull(),
     token: varchar("token", { length: 255 }).notNull(),

@@ -34,7 +34,7 @@ export const authConfig: NextAuthConfig = {
     signOut: "/logout",
     error: "/login",
     verifyRequest: "/verify-request",
-    newUser: "/register",
+    // newUser: "/register",
   },
 
   callbacks: {
