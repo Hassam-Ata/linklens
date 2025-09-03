@@ -15,7 +15,7 @@ import type { AdapterAccount } from "next-auth/adapters";
 // Define user roles enum
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
 
-// Define user table - CHANGED FROM "users" TO "user"
+
 export const users = pgTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
