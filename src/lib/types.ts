@@ -1,7 +1,14 @@
-import z from "zod";
+import { z } from "zod";
 
 export const urlSchema = z.object({
-  url: z.url("Please enter a valid url"),
+  url: z.string().url("Please enter a valid URL"),
+  customCode: z
+    .string()
+    .max(20, "Custom code must be less than 255 characters")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Custom code must be alphanumeric or hyphen")
+    .or(z.literal(""))
+    .transform((val) => (val === null || val === "" ? undefined : val))
+    .optional(),
 });
 
 export type UrlFormData = z.infer<typeof urlSchema>;

@@ -1,6 +1,6 @@
 "use server";
 import { ApiResponse } from "@/lib/types";
-import { ensureHttps } from "@/lib/utils";
+import { ensureHttps, isValidUrl } from "@/lib/utils";
 import z from "zod";
 import { nanoid } from "nanoid";
 import { db } from "@/server/db";
@@ -9,7 +9,16 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/server/auth";
 
 const shortenUrlSchema = z.object({
-  url: z.url(),
+  url: z.url().refine(isValidUrl, {
+    message: "Please enter a valid URL",
+  }),
+  customCode: z
+    .string()
+    .max(20, "Custom code must be less than 20 characters")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Custom code must be alphanumeric or hyphen")
+    .or(z.literal(""))
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 });
 
 export async function shortenUrl(formData: FormData): Promise<
@@ -21,7 +30,12 @@ export async function shortenUrl(formData: FormData): Promise<
     const session = await auth();
     const userId = session?.user?.id;
     const url = formData.get("url") as string;
-    const validatedFields = shortenUrlSchema.safeParse({ url });
+    const customCode = formData.get("customCode") as string;
+
+    const validatedFields = shortenUrlSchema.safeParse({
+      url,
+      customCode: customCode || "",
+    });
 
     if (!validatedFields.success) {
       return {
@@ -30,17 +44,25 @@ export async function shortenUrl(formData: FormData): Promise<
           validatedFields.error.flatten().fieldErrors.url?.[0] || "Invalid URL",
       };
     }
-    const originalUrl = ensureHttps(validatedFields.data.url);
-    const shortCode = nanoid(6);
 
-    //check if shortcode already exists
+    const originalUrl = ensureHttps(validatedFields.data.url);
+    const shortCode = validatedFields.data.customCode || nanoid(6);
+
+    // check if the short code already exists
     const existingUrl = await db.query.urls.findFirst({
       where: (urls, { eq }) => eq(urls.shortCode, shortCode),
     });
 
     if (existingUrl) {
+      if (validatedFields.data.customCode) {
+        return {
+          success: false,
+          error: "Custom code already exists",
+        };
+      }
       return shortenUrl(formData);
     }
+
     await db.insert(urls).values({
       originalUrl,
       shortCode,
@@ -48,6 +70,7 @@ export async function shortenUrl(formData: FormData): Promise<
       updatedAt: new Date(),
       userId: userId || null,
     });
+
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const shortUrl = `${baseUrl}/r/${shortCode}`;
 
