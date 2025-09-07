@@ -22,6 +22,13 @@
       "when": 1756496111045,
       "tag": "0002_greedy_blue_shield",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1757145185246,
+      "tag": "0003_sad_rafael_vega",
+      "breakpoints": true
     }
   ]
 }
