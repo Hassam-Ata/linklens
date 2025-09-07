@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { deleteUrl } from "@/server/actions/urls/delete-url";
 import { QRCodeModal } from "../modals/qr-code-modal";
 import { EditUrlModal } from "../modals/edit-url-modal";
+import Link from "next/link";
 
 interface Url {
   id: number;
@@ -136,13 +137,13 @@ export function UserUrlsTable({ urls }: UserUrlsTableProps) {
                       >
                         {url.originalUrl}
                       </div>
-                      <a
+                      <Link
                         href={url.originalUrl}
                         target="_blank"
                         className="ml-2 text-muted-foreground hover:text-foreground"
                       >
                         <ExternalLink className="size-4" />
-                      </a>
+                      </Link>
                     </div>
                   </td>
                   <td className="py-3 px-4">
