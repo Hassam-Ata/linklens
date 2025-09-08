@@ -1,7 +1,6 @@
 "use client";
+
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UrlFormData, urlSchema } from "@/lib/types";
 import {
   Form,
   FormControl,
@@ -9,16 +8,20 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { UrlFormData, urlSchema } from "@/lib/types";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { Card, CardContent } from "../ui/card";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { shortenUrl } from "@/server/actions/urls/shorten-url";
+import { Card, CardContent } from "../ui/card";
 import { AlertTriangle, Copy, QrCode } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { QRCodeModal } from "../modals/qr-code-modal";
+import { boolean } from "drizzle-orm/gel-core";
 import { toast } from "sonner";
+import { SignupSuggestionDialog } from "../dialogs/signup-suggestion-dialog";
 
 export function UrlShortenerForm() {
   const { data: session } = useSession();
@@ -30,6 +33,7 @@ export function UrlShortenerForm() {
   const [shortCode, setShortCode] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSignupDialog, setShowSignupDialog] = useState(false);
   const [isQrCodeModalOpen, setIsQrCodeModalOpen] = useState(false);
   const [flaggedInfo, setFlaggedInfo] = useState<{
     flagged: boolean;
@@ -55,13 +59,13 @@ export function UrlShortenerForm() {
     try {
       const formData = new FormData();
       formData.append("url", data.url);
+
       // If a custom code is provided, append it to the form data
       if (data.customCode && data.customCode.trim() !== "") {
         formData.append("customCode", data.customCode.trim());
       }
 
       const response = await shortenUrl(formData);
-
       if (response.success && response.data) {
         setShortUrl(response.data.shortUrl);
         // Extract the short code from the short URL
@@ -69,6 +73,7 @@ export function UrlShortenerForm() {
         if (shortCodeMatch && shortCodeMatch[1]) {
           setShortCode(shortCodeMatch[1]);
         }
+
         if (response.data.flagged) {
           setFlaggedInfo({
             flagged: response.data.flagged,
@@ -83,8 +88,13 @@ export function UrlShortenerForm() {
           toast.success("URL shortened successfully");
         }
       }
+
       if (session?.user && pathname.includes("/dashboard")) {
         router.refresh();
+      }
+
+      if (!session?.user) {
+        setShowSignupDialog(true);
       }
     } catch (error) {
       setError("An error occurred. Please try again.");
@@ -108,6 +118,7 @@ export function UrlShortenerForm() {
     if (!shortUrl || !shortCode) return;
     setIsQrCodeModalOpen(true);
   };
+
   return (
     <>
       <div className="w-full max-w-2xl mx-auto">
@@ -121,15 +132,15 @@ export function UrlShortenerForm() {
                   <FormItem className="flex-1">
                     <FormControl>
                       <Input
-                        placeholder="Paste your long url here"
+                        placeholder="Paste your long URL here"
                         {...field}
                         disabled={false}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
-
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
@@ -168,11 +179,13 @@ export function UrlShortenerForm() {
                 </FormItem>
               )}
             />
+
             {error && (
               <div className="p-3 bg-destructive/10 text-destructive rounded-md text-sm">
                 {error}
               </div>
             )}
+
             {shortUrl && (
               <Card>
                 <CardContent className="p-4">
@@ -204,6 +217,7 @@ export function UrlShortenerForm() {
                       <QrCode className="size-4" />
                     </Button>
                   </div>
+
                   {flaggedInfo && flaggedInfo.flagged && (
                     <div className="mt-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
                       <div className="flex items-start gap-2">
@@ -232,6 +246,13 @@ export function UrlShortenerForm() {
           </form>
         </Form>
       </div>
+
+      <SignupSuggestionDialog
+        isOpen={showSignupDialog}
+        onOpenChange={setShowSignupDialog}
+        shortUrl={shortUrl || ""}
+      />
+
       {shortUrl && shortCode && (
         <QRCodeModal
           isOpen={isQrCodeModalOpen}
