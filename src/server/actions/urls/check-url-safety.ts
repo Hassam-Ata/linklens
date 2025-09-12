@@ -23,7 +23,7 @@ export async function checkUrlSafety(
     } catch (error) {
       return {
         success: false,
-        error: "Invalid URL format",
+        error: `Invalid URL format error:${error}`,
       };
     }
 

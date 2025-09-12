@@ -82,7 +82,7 @@ export default function StatsPage() {
 
   // prepare data for the bar chart with numeric values
   const barChartData = useMemo(() => {
-    return topUrls.map((url, index) => ({
+    return topUrls.map((url) => ({
       url: url.shortCode,
       clicks: url.clicks,
       originalUrl: url.originalUrl,
@@ -143,7 +143,7 @@ export default function StatsPage() {
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle>Total URLs</CardTitle>
-            <CardDescription>Number of URLs you've created</CardDescription>
+            <CardDescription>Number of URL you&aposev created</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-3xl font-bold">{userUrls.length}</p>

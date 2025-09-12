@@ -3,7 +3,7 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import z from "zod";
-import { JWT } from "next-auth/jwt";
+import "next-auth/jwt";
 import { db, eq } from "./db";
 import { users } from "./db/schema";
 import bcrypt from "bcryptjs";
@@ -56,18 +56,18 @@ export const authConfig: NextAuthConfig = {
     },
     jwt: async ({ token, user }) => {
       if (user) {
-        (token.id = user.id),
-          (token.email = user.email),
-          (token.name = user.name),
-          (token.picture = user.image),
-          (token.role = user.role);
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.picture = user.image;
+        token.role = user.role;
       }
       return token;
     },
     session: async ({ session, token }) => {
       if (token) {
-        (session.user.id = token.id as string),
-          (session.user.role = token.role);
+        session.user.id = token.id as string;
+        session.user.role = token.role;
       }
       return session;
     },

@@ -59,9 +59,11 @@ export function EditUrlModal({
     },
   });
 
+  const { reset } = form;
+
   useEffect(() => {
-    form.reset({ customCode: currentShortCode });
-  }, [currentShortCode]);
+    reset({ customCode: currentShortCode });
+  }, [currentShortCode, reset]);
 
   const onSubmit = async (data: EditUrlFormData) => {
     setIsLoading(true);

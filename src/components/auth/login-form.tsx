@@ -3,7 +3,7 @@
 import { signIn } from "next-auth/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -27,7 +27,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const LoginForm = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const form = useForm<LoginFormValues>({
