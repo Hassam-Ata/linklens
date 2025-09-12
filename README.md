@@ -64,7 +64,7 @@ Before running LinkLens, ensure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/linklens.git
+git clone https://github.com/Hassam-Ata/linklens.git
 cd linklens
 ```
 
@@ -78,15 +78,22 @@ pnpm install
 ```
 
 ### 3. Environment Setup
-Create a `.env.local` file in the root directory:
+Create a `.env` file in the root directory:
 
 ```env
 # Database
-DATABASE_URL="postgresql://username:password@localhost:5432/linklens"
+DATABASE_URL=
 
 # NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-nextauth-secret-key"
+AUTH_SECRET=
+
+## When using github OAuth
+GITHUB_CLIENT_ID="your github client_id"
+GITHUB_CLIENT_SECRET="your github client secret"
+## When using google OAuth
+GOOGLE_CLIENT_ID="your google client_id"
+GOOGLE_CLIENT_SECRET="your google client secret"
+
 
 # Google Gemini AI
 GEMINI_API_KEY="your-gemini-api-key"
@@ -147,10 +154,9 @@ npm run build        # Build for production
 npm run start        # Start production server
 
 # Database
-npm run db:generate  # Generate migrations
-npm run db:migrate   # Run migrations
-npm run db:seed      # Seed database (dev only)
-npm run db:studio    # Open Drizzle Studio
+npx drizzle-kit generate  #Generate migrations:
+npx drizzle-kit migrate   #Apply migrations
+
 
 # Code Quality
 npm run lint         # Run ESLint
@@ -168,7 +174,7 @@ npm run type-check   # Run TypeScript compiler
    - Import your GitHub repository
 
 3. **Configure Environment Variables**:
-   Add all environment variables from `.env.local` to Vercel's environment settings
+   Add all environment variables from `.env` to Vercel's environment settings
 
 4. **Database Setup**:
    - Set up PostgreSQL database (Vercel Postgres, Supabase, or similar)
