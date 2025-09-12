@@ -99,19 +99,18 @@ GOOGLE_CLIENT_SECRET="your google client secret"
 GEMINI_API_KEY="your-gemini-api-key"
 
 # App Configuration
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_APP_URL="base url" 
 ```
 
 ### 4. Database Setup
 ```bash
 # Generate database migrations
-npm run db:generate
+npx drizzle-kit generate
 
 # Run migrations
-npm run db:migrate
+npx drizzle-kit migrate 
 
-# Seed database (development only)
-npm run db:seed
+
 ```
 
 ### 5. Run Development Server
@@ -284,7 +283,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Gemini API**: Verify your API key is valid and has sufficient quota
 - **Build Errors**: Clear node_modules and reinstall dependencies
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Next.js Team** - For the amazing React framework
 - **Vercel** - For hosting and deployment platform
@@ -294,7 +293,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 📞 Contact
 
-- **Project Repository**: [https://github.com/yourusername/linklens](https://github.com/Hassam-Ata/linklens)
+- **Project Repository**: [https://github.com/Hassam-Ata/linklens](https://github.com/Hassam-Ata/linklens)
 - **Issues & Bugs**: [GitHub Issues](https://github.com/Hassam-Ata/linklens/issues)
 - **Feature Requests**: [GitHub Discussions](https://github.com/Hassam-Ata/linklens/discussions)
 
